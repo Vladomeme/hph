@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "hph",
+  "version": "${version}",
+
+  "name": "HPH",
+  "description": "teammate health display",
+  "authors": [
+    "Vladomeme"
+  ],
+  "contact": {
+  },
+
+  "license": "MIT",
+  "icon": "assets/hph/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.hph.main.HPH"
+    ],
+    "modmenu": [
+      "net.hph.main.config.HPHModMenu"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "fabric": "*",
+    "minecraft": "*",
+    "java": ">=17"
+  }
+}
