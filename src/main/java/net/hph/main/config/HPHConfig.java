@@ -122,8 +122,8 @@ public class HPHConfig {
 
                         .option(Option.<String>createBuilder()
                                 .name(Text.literal("Whitelist"))
-                                .description(OptionDescription.of(Text.of("Names of whitelisted players, comma separated." +
-                                        "Spaces are ignored.\n Whitelist can also be configured in-game using `/hph` and selection keybind.")))
+                                .description(OptionDescription.of(Text.of("Names of whitelisted players, comma separated. " +
+                                        "Spaces are ignored.\nRecommend to be only edit it in-game using selection keybind and `/hph`.")))
                                 .binding("", () -> whitelistString, newVal -> whitelistString = newVal)
                                 .controller(StringControllerBuilder::create).build())
                         .build())
@@ -149,7 +149,7 @@ public class HPHConfig {
 
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Sort by health"))
-                                .description(OptionDescription.of(Text.of("If enabled, lines will be sorted by health %" +
+                                .description(OptionDescription.of(Text.of("If enabled, lines will be sorted by % health " +
                                         "in ascending order.")))
                                 .binding(false, () -> sort, newVal -> sort = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
@@ -163,7 +163,7 @@ public class HPHConfig {
                         .option(Option.<Float>createBuilder()
                                 .name(Text.literal("Text scale"))
                                 .description(OptionDescription.of(Text.literal(
-                                        "Size of display, default - 1")))
+                                        "Size of display, default - 0.75. Recommend to only change value by multiples of 0.25.")))
                                 .binding(1f, () -> scale, newVal -> scale = newVal)
                                 .controller(FloatFieldControllerBuilder::create).build())
 
