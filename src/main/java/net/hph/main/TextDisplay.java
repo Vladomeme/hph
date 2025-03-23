@@ -11,6 +11,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +23,15 @@ public class TextDisplay extends HudElement {
     private static final List<MutableText> lines = new ArrayList<>();
     private static final HPHConfig config = HPHConfig.INSTANCE;
     private static final StringBuilder sb = new StringBuilder();
+    private static final NumberFormat formatter = NumberFormat.getInstance();
 
     public static Style saturationStyle = Style.EMPTY.withColor(config.saturationColour);
+
+    public static void init() {
+        formatter.setMaximumFractionDigits(1);
+        formatter.setMinimumFractionDigits(1);
+        formatter.setRoundingMode(RoundingMode.HALF_UP);
+    }
 
     @Override
     protected void render(DrawContext context, float delta) {
@@ -55,11 +64,11 @@ public class TextDisplay extends HudElement {
             Style currentStyle = Style.EMPTY.withColor(config.getColour(current / max));
 
             sb.setLength(0);
-            sb.append(player.getName().getString()).append(" ").append((int) current).append("/").append((int) max);
+            sb.append(player.getName().getString()).append(" ").append(numDisplay(current)).append("/").append(numDisplay(max));
             if (absorption > 0) {
                 MutableText text = Text.literal(sb.toString()).setStyle(currentStyle);
                 sb.setLength(0);
-                sb.append(" +").append((int) absorption);
+                sb.append(" +").append(numDisplay(absorption));
                 text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.of(" ❤"));
                 lines.add(text);
             }
@@ -97,6 +106,10 @@ public class TextDisplay extends HudElement {
         if (config.enableWhitelistText && !WhitelistManager.isWhitelisted(player)) return false;
         if (!config.displayTextOnFullHP && player.getHealth() >= player.getMaxHealth()) return false;
         return true;
+    }
+
+    private static String numDisplay(float f) {
+        return config.showFraction ? formatter.format(f) : String.valueOf((int) f);
     }
 
     @Override

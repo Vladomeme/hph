@@ -33,6 +33,7 @@ public class HPHConfig {
     public boolean enableWhitelistText = false;
     public boolean sort = true;
     public int maxLineCount = 30;
+    public boolean showFraction = true;
     public final ElementPosition textPosition = new ElementPosition(0.015f, 0, 0.1f, 0, 0.0f, 0);
     public float scale = 0.75f;
     public boolean shadow = true;
@@ -159,6 +160,11 @@ public class HPHConfig {
                                 .description(OptionDescription.of(Text.literal("Maximum number of lines to display.")))
                                 .binding(30, () -> maxLineCount, newVal -> maxLineCount = newVal)
                                 .controller(IntegerFieldControllerBuilder::create).build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Show fraction"))
+                                .binding(true, () -> showFraction, newVal -> showFraction = newVal)
+                                .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Float>createBuilder()
                                 .name(Text.literal("Text scale"))

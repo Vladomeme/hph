@@ -39,6 +39,7 @@ public class HPH implements ClientModInitializer {
             if (config.enableText) TextDisplay.INSTANCE.renderAbsolute(context, tickDelta);
         });
         Hud.INSTANCE.addElement(TextDisplay.INSTANCE);
+        TextDisplay.init();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (config.enableText) TextDisplay.updateTexts();
