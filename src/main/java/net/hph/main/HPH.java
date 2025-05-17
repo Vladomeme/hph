@@ -42,7 +42,10 @@ public class HPH implements ClientModInitializer {
         TextDisplay.init();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (config.enableText) TextDisplay.updateTexts();
+            if (config.enableText) {
+                if (config.rightAlignment) TextDisplay.updateTextsAligned();
+                else TextDisplay.updateTexts();
+            }
             tickKeybinds();
         });
 

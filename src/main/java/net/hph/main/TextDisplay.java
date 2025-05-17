@@ -11,6 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
+import java.awt.*;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -20,10 +21,18 @@ public class TextDisplay extends HudElement {
 
     public static final TextDisplay INSTANCE = new TextDisplay();
 
-    private static final List<MutableText> lines = new ArrayList<>();
+    private static final List<TextLine> lines = new ArrayList<>();
     private static final HPHConfig config = HPHConfig.INSTANCE;
     private static final StringBuilder sb = new StringBuilder();
     private static final NumberFormat formatter = NumberFormat.getInstance();
+
+    private static int width = 150;
+    private static int height = 12;
+
+    private double dragXRelative;
+    private double dragYRelative;
+    private double dragXAbsolute;
+    private double dragYAbsolute;
 
     public static Style saturationStyle = Style.EMPTY.withColor(config.saturationColour);
 
@@ -41,15 +50,15 @@ public class TextDisplay extends HudElement {
         float scale = config.scale;
 
         context.getMatrices().scale(scale, scale, scale);
-        for (Text text : lines) {
-            context.drawText(MinecraftClient.getInstance().textRenderer, text, 0, y, 0, config.shadow);
+        for (TextLine line : lines) {
+            context.drawText(MinecraftClient.getInstance().textRenderer, line.text, line.pos, y, 0, config.shadow);
             y += 12;
         }
     }
 
     @Override
     public void renderTooltip(Screen screen, DrawContext drawContext, int mouseX, int mouseY) {
-        drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.of("Hold ctrl to move"), mouseX, mouseY);
+        if (!dragging) drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.of("Hold ctrl to move"), mouseX, mouseY);
     }
 
     public static void updateTexts() {
@@ -70,13 +79,49 @@ public class TextDisplay extends HudElement {
                 sb.setLength(0);
                 sb.append(" +").append(numDisplay(absorption));
                 text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.of(" ❤"));
-                lines.add(text);
+                lines.add(new TextLine(text, 0));
             }
             else {
                 sb.append(" ❤");
-                lines.add(Text.literal(sb.toString()).setStyle(Style.EMPTY.withColor(config.getColour(current / max))));
+                lines.add(new TextLine(Text.literal(sb.toString()).setStyle(Style.EMPTY.withColor(config.getColour(current / max))), 0));
             }
         }
+        width = (int) (150 * config.scale);
+        height = (int) (lines.size() * 12 * config.scale);
+    }
+
+    public static void updateTextsAligned() {
+        lines.clear();
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        int maxLength = 0;
+        for (PlayerEntity player : getPlayers(client)) {
+            float current = player.getHealth();
+            float max = player.getMaxHealth();
+            float absorption = player.getAbsorptionAmount();
+
+            Style currentStyle = Style.EMPTY.withColor(config.getColour(current / max));
+
+            sb.setLength(0);
+            sb.append(player.getName().getString()).append(" ").append(numDisplay(current)).append("/").append(numDisplay(max));
+            MutableText text;
+            if (absorption > 0) {
+                text = Text.literal(sb.toString()).setStyle(currentStyle);
+                sb.setLength(0);
+                sb.append(" +").append(numDisplay(absorption));
+                text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.of(" ❤"));
+            }
+            else {
+                sb.append(" ❤");
+                text = Text.literal(sb.toString()).setStyle(Style.EMPTY.withColor(config.getColour(current / max)));
+            }
+            int length = client.textRenderer.getWidth(text);
+            if (length > maxLength) maxLength = length;
+            lines.add(new TextLine(text, length));
+        }
+        width = (int) (maxLength * config.scale);
+        height = (int) (lines.size() * 12 * config.scale);
+        for (TextLine line : lines) line.pos = maxLength - line.pos;
     }
 
     public static List<PlayerEntity> getPlayers(MinecraftClient client) {
@@ -124,12 +169,12 @@ public class TextDisplay extends HudElement {
 
     @Override
     protected int getWidth() {
-        return (int) (150 * config.scale);
+        return width;
     }
 
     @Override
     protected int getHeight() {
-        return (int) (lines.size() * 12 * config.scale);
+        return height;
     }
 
     @Override
@@ -140,5 +185,58 @@ public class TextDisplay extends HudElement {
     @Override
     protected int getZOffset() {
         return 1;
+    }
+
+    @Override
+    public Rectangle getDimension() {
+        ElementPosition position = getPosition();
+        int width = getWidth();
+        int height = getHeight();
+        int x = Math.round((float) client.getWindow().getScaledWidth() * position.offsetXRelative + (float)position.offsetXAbsolute - position.alignX * (float)width);
+        int y = Math.round((float) client.getWindow().getScaledHeight() * position.offsetYRelative + (float)position.offsetYAbsolute);
+        return new Rectangle(x, y, width, height);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (!dragging) return false;
+
+        Rectangle dimension = getDimension();
+        ElementPosition position = getPosition();
+        int scaledWidth = client.getWindow().getScaledWidth();
+        int scaledHeight = client.getWindow().getScaledHeight();
+        double newX = mouseX + (double) dimension.x - dragXRelative;
+        double newY = mouseY + (double) dimension.y - dragYRelative;
+
+        double horizontalMiddle = Math.abs(newX + (double) dimension.width / (double) 2.0F - (double) scaledWidth / (double) 2.0F);
+        double right = (double) scaledWidth - (newX + (double) dimension.width);
+        double verticalMiddle = Math.abs(newY + (double) dimension.height / (double) 2.0F - (double) scaledHeight / (double) 2.0F);
+        double bottom = (double) scaledHeight - (newY + (double) dimension.height);
+        position.offsetXRelative = newX < horizontalMiddle && newX < right ? 0.0F : (horizontalMiddle < right ? 0.5F : 1.0F);
+        position.offsetYRelative = newY < verticalMiddle && newY < bottom ? 0.0F : (verticalMiddle < bottom ? 0.5F : 1.0F);
+        position.alignX = position.offsetXRelative;
+        position.alignY = 0;
+        position.offsetXAbsolute = (int) Math.round(newX - (double) ((float) scaledWidth * position.offsetXRelative) + (double) (position.alignX * (float) dimension.width));
+        position.offsetYAbsolute = (int) Math.round(newY - (double) ((float) scaledHeight * position.offsetYRelative));
+        if (!Screen.hasAltDown()) {
+            if (position.offsetXRelative == 0.5F && Math.abs(position.offsetXAbsolute) < 10) {
+                position.offsetXAbsolute = 0;
+            }
+
+            if (position.offsetYRelative == 0.5F && Math.abs(position.offsetYAbsolute) < 10) {
+                position.offsetYAbsolute = 0;
+            }
+        }
+        return true;
+    }
+
+    static class TextLine {
+        Text text;
+        int pos;
+
+        TextLine(Text text, int pos) {
+            this.text = text;
+            this.pos = pos;
+        }
     }
 }

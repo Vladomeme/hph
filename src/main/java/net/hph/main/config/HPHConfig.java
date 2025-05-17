@@ -29,12 +29,13 @@ public class HPHConfig {
     public String whitelistString = "";
 
     public boolean enableText = true;
+    public boolean rightAlignment = false;
     public boolean displayTextOnFullHP = true;
     public boolean enableWhitelistText = false;
     public boolean sort = true;
     public int maxLineCount = 30;
     public boolean showFraction = true;
-    public final ElementPosition textPosition = new ElementPosition(0.015f, 0, 0.1f, 0, 0.0f, 0);
+    public final ElementPosition textPosition = new ElementPosition(0.015f, 0, 0.3f, 0, 0.0f, 0);
     public float scale = 0.75f;
     public boolean shadow = true;
 
@@ -136,6 +137,11 @@ public class HPHConfig {
                                 .name(Text.literal("Enabled"))
                                 .description(OptionDescription.of(Text.of("Enables text health display.")))
                                 .binding(true, () -> enableText, newVal -> enableText = newVal)
+                                .controller(TickBoxControllerBuilder::create).build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Use right alignment"))
+                                .binding(false, () -> rightAlignment, newVal -> rightAlignment = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
