@@ -5,7 +5,9 @@ import ch.njol.minecraft.uiframework.hud.HudElement;
 import net.hph.main.config.HPHConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -16,6 +18,7 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TextDisplay extends HudElement {
 
@@ -192,8 +195,13 @@ public class TextDisplay extends HudElement {
         ElementPosition position = getPosition();
         int width = getWidth();
         int height = getHeight();
-        int x = Math.round((float) client.getWindow().getScaledWidth() * position.offsetXRelative + (float)position.offsetXAbsolute - position.alignX * (float)width);
-        int y = Math.round((float) client.getWindow().getScaledHeight() * position.offsetYRelative + (float)position.offsetYAbsolute);
+        int x = Math.round((float) client.getWindow().getScaledWidth() * position.offsetXRelative + (float) position.offsetXAbsolute - position.alignX * (float) width);
+        int y = Math.round((float) client.getWindow().getScaledHeight() * position.offsetYRelative + (float) position.offsetYAbsolute);
+        if (config.effectPadding && !(client.currentScreen instanceof ChatScreen)) {
+            for (StatusEffectInstance effect : Objects.requireNonNull(client.player).getStatusEffects()) {
+                if (effect.shouldShowIcon()) y += config.effectPaddingSize;
+            }
+        }
         return new Rectangle(x, y, width, height);
     }
 

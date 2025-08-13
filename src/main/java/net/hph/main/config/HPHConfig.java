@@ -38,6 +38,8 @@ public class HPHConfig {
     public final ElementPosition textPosition = new ElementPosition(0.015f, 0, 0.3f, 0, 0.0f, 0);
     public float scale = 0.75f;
     public boolean shadow = true;
+    public boolean effectPadding = false;
+    public int effectPaddingSize = 52;
 
     public boolean enableGlow = true;
     public boolean glowOnFullHP = true;
@@ -183,6 +185,16 @@ public class HPHConfig {
                                 .name(Text.literal("Draw text with shadow"))
                                 .binding(true, () -> shadow, newVal -> shadow = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Effect display padding"))
+                                .binding(false, () -> effectPadding, newVal -> effectPadding = newVal)
+                                .controller(TickBoxControllerBuilder::create).build())
+
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.literal("Padding size"))
+                                .binding(52, () -> effectPaddingSize, newVal -> effectPaddingSize = newVal)
+                                .controller(IntegerFieldControllerBuilder::create).build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()
