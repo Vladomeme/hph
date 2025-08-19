@@ -39,7 +39,7 @@ public class HPHConfig {
     public float scale = 0.75f;
     public boolean shadow = true;
     public boolean effectPadding = false;
-    public int effectPaddingSize = 52;
+    public int effectPaddingSize = 26;
 
     public boolean enableGlow = true;
     public boolean glowOnFullHP = true;
@@ -193,7 +193,7 @@ public class HPHConfig {
 
                         .option(Option.<Integer>createBuilder()
                                 .name(Text.literal("Padding size"))
-                                .binding(52, () -> effectPaddingSize, newVal -> effectPaddingSize = newVal)
+                                .binding(26, () -> effectPaddingSize, newVal -> effectPaddingSize = newVal)
                                 .controller(IntegerFieldControllerBuilder::create).build())
                         .build())
 
