@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
@@ -46,7 +47,7 @@ public class TextDisplay extends HudElement {
     }
 
     @Override
-    protected void render(DrawContext context, float delta) {
+    protected void render(DrawContext context, RenderTickCounter tickCounter) {
         if (lines.isEmpty()) return;
 
         int y = 0;
@@ -203,7 +204,7 @@ public class TextDisplay extends HudElement {
             for (StatusEffectInstance effect : Objects.requireNonNull(client.player).getStatusEffects()) {
                 if (effect.shouldShowIcon()) {
                     usePadding = true;
-                    if (!effect.getEffectType().isBeneficial()) hasNegative = true;
+                    if (!effect.getEffectType().value().isBeneficial()) hasNegative = true;
                 }
             }
             if (usePadding) y += hasNegative ? config.effectPaddingSize * 2 : config.effectPaddingSize;
