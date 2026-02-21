@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "HPH",
-  "description": "teammate health display",
+  "description": "Teammate health display",
   "authors": [
     "Vladomeme"
   ],
@@ -27,6 +27,7 @@
     "hph.mixins.json"
   ],
   "depends": {
+    "yet_another_config_lib_v3": "*",
     "fabricloader": ">=0.14.21",
     "fabric": "*",
     "minecraft": "*",
