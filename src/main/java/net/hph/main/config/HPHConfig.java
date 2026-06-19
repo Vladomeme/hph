@@ -27,6 +27,7 @@ import java.util.Arrays;
 public class HPHConfig {
 
     public String whitelistString = "";
+    public boolean filterFakePlayers = true;
 
     public boolean enableText = true;
     public boolean rightAlignment = false;
@@ -130,6 +131,12 @@ public class HPHConfig {
                                         "Spaces are ignored.\nRecommend to be only edit it in-game using selection keybind and `/hph`.")))
                                 .binding("", () -> whitelistString, newVal -> whitelistString = newVal)
                                 .controller(StringControllerBuilder::create).build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Filter fake players"))
+                                .description(OptionDescription.of(Text.of("Excludes players with score 0 from display.")))
+                                .binding(true, () -> filterFakePlayers, newVal -> filterFakePlayers = newVal)
+                                .controller(TickBoxControllerBuilder::create).build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()

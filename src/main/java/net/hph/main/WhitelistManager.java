@@ -55,6 +55,7 @@ public class WhitelistManager {
     }
 
     public static boolean shouldForceGlow(Entity entity) {
+        if (HPHConfig.INSTANCE.filterFakePlayers && TextDisplay.isFakePlayer((PlayerEntity) entity)) return false;
         return HPH.selectionKey.isPressed() || (HPHConfig.INSTANCE.enableWhitelistGlow && WhitelistManager.isWhitelisted(entity));
     }
 

@@ -33,9 +33,13 @@ public class TextDisplay extends HudElement {
     private static int width = 150;
     private static int height = 12;
 
+    @SuppressWarnings("unused")
     private double dragXRelative;
+    @SuppressWarnings("unused")
     private double dragYRelative;
+    @SuppressWarnings("unused")
     private double dragXAbsolute;
+    @SuppressWarnings("unused")
     private double dragYAbsolute;
 
     public static Style saturationStyle = Style.EMPTY.withColor(config.saturationColour);
@@ -152,9 +156,14 @@ public class TextDisplay extends HudElement {
 
     private static boolean shouldDisplay(PlayerEntity player, int clientID) {
         if (player.getId() == clientID) return false;
+        if (config.filterFakePlayers && isFakePlayer(player)) return false;
         if (config.enableWhitelistText && !WhitelistManager.isWhitelisted(player)) return false;
         if (!config.displayTextOnFullHP && player.getHealth() >= player.getMaxHealth()) return false;
         return true;
+    }
+
+    public static boolean isFakePlayer(PlayerEntity player) {
+        return player.getScore() == 0 || player.getName().getString().charAt(0) == '|';
     }
 
     private static String numDisplay(float f) {
@@ -246,7 +255,7 @@ public class TextDisplay extends HudElement {
     }
 
     static class TextLine {
-        Text text;
+        final Text text;
         int pos;
 
         TextLine(Text text, int pos) {

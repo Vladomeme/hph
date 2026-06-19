@@ -1,6 +1,7 @@
 package net.hph.main.mixin;
 
 import net.hph.main.HPH;
+import net.hph.main.TextDisplay;
 import net.hph.main.WhitelistManager;
 import net.hph.main.config.HPHConfig;
 import net.minecraft.entity.Entity;
@@ -24,6 +25,8 @@ public abstract class EntityMixin {
 
 			PlayerEntity target = WhitelistManager.targeted;
 			PlayerEntity current = (PlayerEntity) (Object) this;
+
+			if (config.filterFakePlayers && TextDisplay.isFakePlayer(current)) return;
 
 			if (HPH.selectionKey.isPressed()) {
 				if (target != null && getId() == target.getId())
