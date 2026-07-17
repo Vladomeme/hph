@@ -67,7 +67,8 @@ public class WhitelistManager {
     public static int add(CommandContext<FabricClientCommandSource> context) {
         String name = StringArgumentType.getString(context, "Player");
         whitelist.add(name);
-        client.inGameHud.getChatHud().addMessage(Text.of("Added " + name + " to HPH whitelist."));
+        HPHConfig.INSTANCE.saveWhitelist();
+        client.inGameHud.getChatHud().addMessage(Text.translatable("hph.command.add.success", name));
         return 1;
     }
 
@@ -75,14 +76,16 @@ public class WhitelistManager {
     public static int remove(CommandContext<FabricClientCommandSource> context) {
         String name = StringArgumentType.getString(context, "Player");
         whitelist.remove(name);
-        client.inGameHud.getChatHud().addMessage(Text.of("Removed " + name + " from HPH whitelist."));
+        HPHConfig.INSTANCE.saveWhitelist();
+        client.inGameHud.getChatHud().addMessage(Text.translatable("hph.command.remove.success", name));
         return 1;
     }
 
     @SuppressWarnings("SameReturnValue") //return int because used in a command
     public static int clear() {
         whitelist.clear();
-        client.inGameHud.getChatHud().addMessage(Text.of("Cleared HPH whitelist."));
+        HPHConfig.INSTANCE.saveWhitelist();
+        client.inGameHud.getChatHud().addMessage(Text.translatable("hph.command.clear.success"));
         return 1;
     }
 
@@ -119,8 +122,12 @@ public class WhitelistManager {
         if (whitelisted) whitelist.remove(name);
         else whitelist.add(name);
 
-        client.inGameHud.setOverlayMessage(Text.of("§e" + (whitelisted ? "Removed " : "Added ")
-                + name + (whitelisted ? " from whitelist." : " to whitelist.")), false);
+        HPHConfig.INSTANCE.saveWhitelist();
+
+        client.inGameHud.setOverlayMessage(
+                Text.translatable(whitelisted ? "hph.whitelist.toggle.removed" : "hph.whitelist.toggle.added", name),
+                false
+        );
 
         PlayerEntity player = client.player;
         client.world.playSound(player.getX(), player.getY(), player.getZ(),

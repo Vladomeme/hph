@@ -65,7 +65,11 @@ public class TextDisplay extends HudElement {
 
     @Override
     public void renderTooltip(Screen screen, DrawContext drawContext, int mouseX, int mouseY) {
-        if (!dragging) drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.of("Hold ctrl to move"), mouseX, mouseY);
+        if (!dragging) drawContext.drawTooltip(
+                MinecraftClient.getInstance().textRenderer,
+                Text.translatable("hph.tooltip.move"),
+                mouseX, mouseY
+        );
     }
 
     public static void updateTexts() {
@@ -84,12 +88,11 @@ public class TextDisplay extends HudElement {
             if (absorption > 0) {
                 MutableText text = Text.literal(sb.toString()).setStyle(currentStyle);
                 sb.setLength(0);
-                sb.append(" +").append(numDisplay(absorption));
-                text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.of(" ❤"));
+                sb.append(Text.translatable("hph.healthTextDisplay.absorptionPrefix").getString()).append(numDisplay(absorption));
+                text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.translatable("hph.healthTextDisplay.healthSuffix").getString());
                 lines.add(new TextLine(text, 0));
-            }
-            else {
-                sb.append(" ❤");
+            } else {
+                sb.append(Text.translatable("hph.healthTextDisplay.healthSuffix").getString());
                 lines.add(new TextLine(Text.literal(sb.toString()).setStyle(Style.EMPTY.withColor(config.getColour(current / max))), 0));
             }
         }
@@ -115,11 +118,10 @@ public class TextDisplay extends HudElement {
             if (absorption > 0) {
                 text = Text.literal(sb.toString()).setStyle(currentStyle);
                 sb.setLength(0);
-                sb.append(" +").append(numDisplay(absorption));
-                text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.of(" ❤"));
-            }
-            else {
-                sb.append(" ❤");
+                sb.append(Text.translatable("hph.healthTextDisplay.absorptionPrefix").getString()).append(numDisplay(absorption));
+                text.append(Text.literal(sb.toString()).setStyle(saturationStyle)).append(Text.translatable("hph.healthTextDisplay.healthSuffix").getString());
+            } else {
+                sb.append(Text.translatable("hph.healthTextDisplay.healthSuffix").getString());
                 text = Text.literal(sb.toString()).setStyle(Style.EMPTY.withColor(config.getColour(current / max)));
             }
             int length = client.textRenderer.getWidth(text);

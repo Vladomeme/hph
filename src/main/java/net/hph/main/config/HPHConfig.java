@@ -81,7 +81,7 @@ public class HPHConfig {
         }
     }
 
-    private void onWrite() {
+    public void saveWhitelist() {
         String textNew = WhitelistManager.whitelist.toString();
         whitelistString = textNew.substring(1, textNew.length() - 1);
         TextDisplay.saturationStyle = Style.EMPTY.withColor(saturationColour);
@@ -119,151 +119,148 @@ public class HPHConfig {
         String textNew = WhitelistManager.whitelist.toString();
         whitelistString = textNew.substring(1, textNew.length() - 1);
         return YetAnotherConfigLib.createBuilder()
-                .save(this::onWrite)
-                .title(Text.literal("HPH Display"))
+                .save(this::saveWhitelist)
+                .title(Text.translatable("hph.config.title"))
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("General"))
+                        .name(Text.translatable("hph.config.category.general"))
 
                         .option(Option.<String>createBuilder()
-                                .name(Text.literal("Whitelist"))
-                                .description(OptionDescription.of(Text.of("Names of whitelisted players, comma separated. " +
-                                        "Spaces are ignored.\nRecommend to be only edit it in-game using selection keybind and `/hph`.")))
+                                .name(Text.translatable("hph.config.option.whitelist"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.whitelist.desc")))
                                 .binding("", () -> whitelistString, newVal -> whitelistString = newVal)
                                 .controller(StringControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Filter fake players"))
-                                .description(OptionDescription.of(Text.of("Excludes players with score 0 from display.")))
+                                .name(Text.translatable("hph.config.option.filterFakePlayers"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.filterFakePlayers.desc")))
                                 .binding(true, () -> filterFakePlayers, newVal -> filterFakePlayers = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Text display"))
+                        .name(Text.translatable("hph.config.category.text"))
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Enabled"))
-                                .description(OptionDescription.of(Text.of("Enables text health display.")))
+                                .name(Text.translatable("hph.config.option.enableText"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.enableText.desc")))
                                 .binding(true, () -> enableText, newVal -> enableText = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Use right alignment"))
+                                .name(Text.translatable("hph.config.option.rightAlignment"))
                                 .binding(false, () -> rightAlignment, newVal -> rightAlignment = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Display on full health"))
+                                .name(Text.translatable("hph.config.option.displayOnFullHP"))
                                 .binding(true, () -> displayTextOnFullHP, newVal -> displayTextOnFullHP = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Use whitelist"))
+                                .name(Text.translatable("hph.config.option.enableWhitelistText"))
                                 .binding(false, () -> enableWhitelistText, newVal -> enableWhitelistText = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Sort by health"))
-                                .description(OptionDescription.of(Text.of("If enabled, lines will be sorted by % health " +
-                                        "in ascending order.")))
+                                .name(Text.translatable("hph.config.option.sort"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.sort.desc")))
                                 .binding(false, () -> sort, newVal -> sort = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Max line count"))
-                                .description(OptionDescription.of(Text.literal("Maximum number of lines to display.")))
+                                .name(Text.translatable("hph.config.option.maxLineCount"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.maxLineCount.desc")))
                                 .binding(30, () -> maxLineCount, newVal -> maxLineCount = newVal)
                                 .controller(IntegerFieldControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Show fraction"))
+                                .name(Text.translatable("hph.config.option.showFraction"))
                                 .binding(true, () -> showFraction, newVal -> showFraction = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Float>createBuilder()
-                                .name(Text.literal("Text scale"))
-                                .description(OptionDescription.of(Text.literal(
-                                        "Size of display, default - 0.75. Recommend to only change value by multiples of 0.25.")))
+                                .name(Text.translatable("hph.config.option.scale"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.scale.desc")))
                                 .binding(1f, () -> scale, newVal -> scale = newVal)
                                 .controller(FloatFieldControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Draw text with shadow"))
+                                .name(Text.translatable("hph.config.option.shadow"))
                                 .binding(true, () -> shadow, newVal -> shadow = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Effect display padding"))
+                                .name(Text.translatable("hph.config.option.effectPadding"))
                                 .binding(false, () -> effectPadding, newVal -> effectPadding = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Padding size"))
+                                .name(Text.translatable("hph.config.option.effectPaddingSize"))
                                 .binding(26, () -> effectPaddingSize, newVal -> effectPaddingSize = newVal)
                                 .controller(IntegerFieldControllerBuilder::create).build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Glowing"))
+                        .name(Text.translatable("hph.config.category.glow"))
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Enabled"))
-                                .description(OptionDescription.of(Text.of("Enables health coloured glowing.")))
+                                .name(Text.translatable("hph.config.option.enableGlow"))
+                                .description(OptionDescription.of(Text.translatable("hph.config.option.enableGlow.desc")))
                                 .binding(true, () -> enableGlow, newVal -> enableGlow = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Glow on full health"))
+                                .name(Text.translatable("hph.config.option.glowOnFullHP"))
                                 .binding(true, () -> glowOnFullHP, newVal -> glowOnFullHP = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Use whitelist"))
+                                .name(Text.translatable("hph.config.option.enableWhitelistGlow"))
                                 .binding(false, () -> enableWhitelistGlow, newVal -> enableWhitelistGlow = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Bypass Gross Hacks glowing toggle"))
+                                .name(Text.translatable("hph.config.option.overrideGrossHacks"))
                                 .binding(true, () -> overrideGrossHacksGlowing, newVal -> overrideGrossHacksGlowing = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
                         .build())
 
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Colours"))
+                        .name(Text.translatable("hph.config.category.colours"))
 
                         .option(Option.<Color>createBuilder()
-                                .name(Text.literal("Full health"))
+                                .name(Text.translatable("hph.config.option.hp100Colour"))
                                 .binding(new Color(-11141291, true),
                                         () -> new Color(hp100Colour, true), newVal -> hp100Colour = newVal.getRGB())
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true)).build())
 
                         .option(Option.<Color>createBuilder()
-                                .name(Text.literal("Damaged"))
+                                .name(Text.translatable("hph.config.option.hp66Colour"))
                                 .binding(new Color(-171, true),
                                         () -> new Color(hp66Colour, true), newVal -> hp66Colour = newVal.getRGB())
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true)).build())
 
                         .option(Option.<Color>createBuilder()
-                                .name(Text.literal("Low health"))
+                                .name(Text.translatable("hph.config.option.hp33Colour"))
                                 .binding(new Color(-43691, true),
                                         () -> new Color(hp33Colour, true), newVal -> hp33Colour = newVal.getRGB())
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true)).build())
 
                         .option(Option.<Color>createBuilder()
-                                .name(Text.literal("Saturation"))
+                                .name(Text.translatable("hph.config.option.saturationColour"))
                                 .binding(new Color(-12779521, true),
                                         () -> new Color(saturationColour, true), newVal -> saturationColour = newVal.getRGB())
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true)).build())
 
                         .option(Option.<Color>createBuilder()
-                                .name(Text.literal("Selection - targeted"))
+                                .name(Text.translatable("hph.config.option.targetColour"))
                                 .binding(new Color(-6250241, true),
                                         () -> new Color(targetColour, true), newVal -> targetColour = newVal.getRGB())
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true)).build())
 
                         .option(Option.<Color>createBuilder()
-                                .name(Text.literal("Selection - whitelisted & targeted"))
+                                .name(Text.translatable("hph.config.option.whitelistedTargetColour"))
                                 .binding(new Color(-12829441, true),
                                         () -> new Color(whitelistedTargetColour, true), newVal -> whitelistedTargetColour = newVal.getRGB())
                                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true)).build())

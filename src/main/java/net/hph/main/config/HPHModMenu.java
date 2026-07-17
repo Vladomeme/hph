@@ -15,6 +15,8 @@ public class HPHModMenu implements ModMenuApi {
             return HPHConfig.INSTANCE::create;
         }
         return parent -> new NoticeScreen(() -> MinecraftClient.getInstance().setScreen(parent),
-                Text.of("HPH"), Text.of("Mod requires YACL to be able to show the config."));
+                Text.translatable("hph.modmenu.missingYacl.title"),
+                Text.translatable("hph.modmenu.missingYacl.message")
+        );
     }
 }
