@@ -177,7 +177,7 @@ public class TextDisplay extends HudElement {
 
     @Override
     protected boolean isVisible() {
-        return true;
+        return !client.options.hudHidden;
     }
 
     @Override
